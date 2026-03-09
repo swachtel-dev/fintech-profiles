@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fintech Company Profiles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=DM+Sans:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf8f4;
+  --surface: #ffffff;
+  --panel: #1a2332;
+  --panel-surface: #243040;
+  --panel-text: #e8edf3;
+  --panel-muted: #8899aa;
+  --text: #1a1a1a;
+  --muted: #6b7264;
+  --accent: #2d6a4f;
+  --accent-bright: #40916c;
+  --accent-light: #f0f7f2;
+  --warm: #f5f0e6;
+  --warm-dark: #e8dfd0;
+  --border: #ddd6c8;
+  --positive: #2d6a4f;
+  --positive-light: #d8f3dc;
+  --negative: #c1121f;
+  --negative-light: #fde8e8;
+  --warning: #b5651d;
+  --warning-light: #fef3e2;
+  --info: #1d4e89;
+  --info-light: #e8f0fb;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.75;
+  font-size:16.5px;
+  -webkit-font-smoothing:antialiased;
+}
+.container{max-width:920px;margin:0 auto;padding:0 1.5rem 4rem}
+
+.site-header{
+  padding:3.5rem 1rem 2rem;
+  text-align:center;
+  position:relative;
+}
+.site-header::after{
+  content:'';display:block;width:60px;height:3px;
+  background:var(--accent);margin:1.5rem auto 0;border-radius:2px;
+}
+.site-header .label{
+  font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;
+  color:var(--muted);font-weight:500;margin-bottom:.5rem;
+}
+.site-header h1{
+  font-family:'Fraunces',serif;font-size:2rem;font-weight:500;
+  font-variation-settings:'opsz' 40;line-height:1.25;color:var(--text);
+  max-width:550px;margin:0 auto;
+}
+.site-header .subtitle{
+  color:var(--muted);font-size:.92rem;margin-top:.75rem;
+  max-width:550px;margin-left:auto;margin-right:auto;
+}
+
+.intro{
+  max-width:720px;margin:2rem auto 2.5rem;
+  font-size:.95rem;color:var(--text);line-height:1.8;
+}
+
+/* Category filters */
+.filters{
+  display:flex;gap:.5rem;flex-wrap:wrap;
+  justify-content:center;
+  margin:0 auto 2rem;max-width:720px;
+}
+.filter-btn{
+  padding:.45rem 1rem;border-radius:20px;
+  font-size:.8rem;font-weight:500;
+  border:1.5px solid var(--border);background:var(--surface);
+  color:var(--muted);cursor:pointer;
+  transition:all .2s ease;
+}
+.filter-btn:hover{border-color:var(--accent);color:var(--accent)}
+.filter-btn.active{
+  background:var(--accent);color:#fff;border-color:var(--accent);
+}
+
+/* Company cards grid */
+.card-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:1rem;
+  margin-bottom:2rem;
+}
+@media(max-width:680px){.card-grid{grid-template-columns:1fr}}
+
+.company-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:12px;overflow:hidden;
+  transition:all .3s ease;cursor:pointer;
+}
+.company-card:hover{border-color:var(--accent);box-shadow:0 2px 12px rgba(45,106,79,.08)}
+.company-card.expanded{grid-column:1/-1;cursor:default}
+.company-card.hidden{display:none}
+
+.card-header{
+  padding:1.25rem 1.25rem .75rem;display:flex;align-items:flex-start;gap:1rem;
+}
+.card-icon{
+  width:48px;height:48px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Fraunces',serif;font-weight:700;font-size:1.1rem;
+  color:#fff;flex-shrink:0;
+}
+.card-info h3{
+  font-family:'Fraunces',serif;font-size:1.05rem;font-weight:600;
+  font-variation-settings:'opsz' 24;line-height:1.3;margin-bottom:.15rem;
+}
+.card-info .card-tagline{font-size:.82rem;color:var(--muted);line-height:1.4}
+
+.card-meta{
+  display:flex;gap:1rem;padding:0 1.25rem .75rem;flex-wrap:wrap;
+}
+.meta-tag{
+  font-size:.72rem;font-weight:500;
+  padding:.2rem .6rem;border-radius:4px;
+  background:var(--warm);color:var(--muted);
+  text-transform:uppercase;letter-spacing:.04em;
+}
+.meta-tag.public{background:var(--positive-light);color:var(--positive)}
+.meta-tag.private{background:var(--warning-light);color:var(--warning)}
+
+.card-summary{
+  padding:0 1.25rem 1.25rem;font-size:.88rem;
+  color:var(--text);line-height:1.65;display:none;
+}
+.company-card.expanded .card-summary{display:block}
+
+.card-expand-hint{
+  padding:.5rem 1.25rem .75rem;font-size:.75rem;
+  color:var(--accent);font-weight:500;
+}
+.company-card.expanded .card-expand-hint{display:none}
+
+/* Expanded detail sections */
+.detail-section{
+  padding:0 1.25rem 1rem;display:none;
+}
+.company-card.expanded .detail-section{display:block}
+.detail-section h4{
+  font-family:'Fraunces',serif;font-size:.95rem;font-weight:600;
+  color:var(--accent);margin:1rem 0 .4rem;
+  font-variation-settings:'opsz' 20;
+}
+.detail-section p{font-size:.88rem;margin-bottom:.6rem;line-height:1.65}
+.detail-section ul{margin:.4rem 0 .8rem 1.25rem;font-size:.88rem}
+.detail-section li{margin-bottom:.25rem;line-height:1.55}
+
+.key-metrics{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:.75rem;margin:.75rem 0 1rem;
+}
+.metric-box{
+  background:var(--warm);border-radius:8px;padding:.75rem 1rem;
+}
+.metric-box .metric-label{
+  font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--muted);font-weight:500;margin-bottom:.15rem;
+}
+.metric-box .metric-value{
+  font-family:'Fraunces',serif;font-size:1.1rem;font-weight:600;
+  color:var(--text);
+}
+
+.doc-links{
+  margin:.5rem 0 1.25rem;
+}
+.doc-links a{
+  display:inline-block;font-size:.82rem;
+  padding:.35rem .75rem;margin:.25rem .25rem .25rem 0;
+  background:var(--accent-light);border-radius:6px;
+  color:var(--accent);text-decoration:none;font-weight:500;
+  transition:all .2s;
+}
+.doc-links a:hover{background:var(--accent);color:#fff}
+
+.collapse-btn{
+  display:none;margin:0 1.25rem 1.25rem;
+  padding:.5rem 1rem;border-radius:8px;
+  font-size:.82rem;font-weight:500;
+  border:1.5px solid var(--border);background:var(--surface);
+  color:var(--muted);cursor:pointer;transition:all .2s;
+}
+.collapse-btn:hover{border-color:var(--accent);color:var(--accent)}
+.company-card.expanded .collapse-btn{display:inline-block}
+
+/* Callout */
+.callout{
+  background:var(--warm);border-radius:8px;
+  padding:1rem 1.25rem;margin:1.5rem 0;font-size:.92rem;
+  position:relative;overflow:hidden;
+}
+.callout::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:var(--accent);border-radius:4px 0 0 4px;
+}
+.callout.info{background:var(--info-light)}
+.callout.info::before{background:var(--info)}
+.callout strong{display:block;margin-bottom:.25rem;font-family:'Fraunces',serif;font-weight:600;font-size:.98rem}
+
+a{color:var(--accent);text-decoration-color:var(--accent-bright);text-underline-offset:2px}
+a:hover{color:var(--accent-bright)}
+
+/* How to use section */
+.how-to-use{
+  max-width:720px;margin:0 auto 2rem;
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:12px;padding:1.5rem;
+}
+.how-to-use h2{
+  font-family:'Fraunces',serif;font-size:1.2rem;font-weight:500;
+  margin-bottom:.75rem;font-variation-settings:'opsz' 28;
+}
+.how-to-use ol{margin:.5rem 0 0 1.25rem;font-size:.9rem}
+.how-to-use li{margin-bottom:.4rem;line-height:1.6}
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="label">FINAN VIII &middot; Unit 6 Resource</div>
+  <h1>Fintech Company Profiles</h1>
+  <p class="subtitle">10 companies across payments, lending, neobanking, and infrastructure. Choose one for your analyst brief.</p>
+</div>
+
+<div class="container">
+
+<div class="how-to-use">
+  <h2>How to Use This Resource</h2>
+  <ol>
+    <li><strong>Browse all 10 profiles</strong> to understand the fintech landscape. Use the category filters to compare companies within the same category.</li>
+    <li><strong>Click any card</strong> to expand its full profile: business overview, key metrics, competitive position, and links to primary documentation.</li>
+    <li><strong>Choose one company</strong> for your analyst brief. Pick a company whose business model interests you and whose primary sources you can access.</li>
+    <li><strong>Read at least two primary sources</strong> from the documentation links before writing. For public companies, the most recent 10-K filing is your single best source.</li>
+  </ol>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" data-filter="all">All Companies</button>
+  <button class="filter-btn" data-filter="payments">Payments</button>
+  <button class="filter-btn" data-filter="lending">Lending / BNPL</button>
+  <button class="filter-btn" data-filter="neobanking">Neobanking</button>
+  <button class="filter-btn" data-filter="infrastructure">Infrastructure</button>
+</div>
+
+<div class="card-grid" id="cardGrid">
+
+  <!-- 1. STRIPE -->
+  <div class="company-card" data-category="payments" id="stripe">
+    <div class="card-header">
+      <div class="card-icon" style="background:linear-gradient(135deg,#635bff,#7a73ff)">S</div>
+      <div class="card-info">
+        <h3>Stripe</h3>
+        <div class="card-tagline">Internet payments infrastructure</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="meta-tag">Payments</span>
+      <span class="meta-tag private">Private</span>
+      <span class="meta-tag">Founded 2010</span>
+    </div>
+    <div class="card-expand-hint">Click to expand full profile &rarr;</div>
+    <div class="card-summary">
+      <p>Stripe builds the financial infrastructure for internet businesses. Its core product is a payments API that lets any company accept online payments with a few lines of code. Founded by brothers Patrick and John Collison in San Francisco, Stripe has expanded from payment processing into a full-stack financial platform: billing, invoicing, fraud detection, issuing, treasury, lending, and identity verification.</p>
+
+      <h4>Business Overview</h4>
+      <p>Stripe processes over $1 trillion in total payment volume annually as of 2023. It serves millions of businesses globally, from startups to enterprises including Amazon, Google, and Shopify. Revenue comes primarily from per-transaction fees (typically 2.9% + $0.30 per US card transaction), plus fees for additional products. Stripe was valued at $95 billion in 2021, then at $50 billion in a 2023 employee tender offer, and most recently at approximately $65 billion in early 2024 fundraising.</p>
+
+      <h4>Key Metrics</h4>
+      <div class="key-metrics">
+        <div class="metric-box"><div class="metric-label">Total Payment Volume</div><div class="metric-value">$1T+ /yr</div></div>
+        <div class="metric-box"><div class="metric-label">Valuation</div><div class="metric-value">~$65B</div></div>
+        <div class="metric-box"><div class="metric-label">Employees</div><div class="metric-value">~8,000</div></div>
+        <div class="metric-box"><div class="metric-label">Markets</div><div class="metric-value">46+ countries</div></div>
+      </div>
+
+      <h4>Competitive Position</h4>
+      <p>Stripe competes primarily against legacy payment processors (Fiserv/First Data, Global Payments) and PayPal/Braintree. Its advantage is developer experience: Stripe's API-first design makes integration faster and more flexible than legacy processors, which were built for in-store card terminals and retrofitted for e-commerce. The disadvantage of being private is limited public financial data; the advantage is long-term strategic flexibility without quarterly earnings pressure.</p>
+
+      <h4>Regulatory Landscape</h4>
+      <p>Stripe holds money transmitter licenses across all US states and is regulated as a payment facilitator. In Europe, it operates through licensed entities in Ireland and the UK. Its expansion into lending (Stripe Capital) and treasury (Stripe Treasury, built on partner bank infrastructure) brings additional regulatory exposure to banking and consumer credit rules.</p>
+
+      <h4>Why This Company Is Interesting for Your Brief</h4>
+      <p>Stripe is the clearest example of a company that built developer-first infrastructure and captured the internet economy's payments layer. However, its private status means you will need to rely on press coverage and third-party analyses rather than SEC filings. This is a good choice if you want to analyze how API-based infrastructure creates network effects and switching costs.</p>
+
+      <h4>Primary Documentation</h4>
+      <div class="doc-links">
+        <a href="https://stripe.com/newsroom" target="_blank">Stripe Newsroom</a>
+        <a href="https://stripe.com/reports/annual" target="_blank">Stripe Annual Letter</a>
+        <a href="https://stripe.com/docs" target="_blank">Stripe API Docs</a>
+      </div>
+    </div>
+    <button class="collapse-btn" onclick="event.stopPropagation();this.closest('.company-card').classList.remove('expanded')">Collapse</button>
+  </div>
+
+  <!-- 2. BLOCK (SQUARE) -->
+  <div class="company-card" data-category="payments" id="block">
+    <div class="card-header">
+      <div class="card-icon" style="background:linear-gradient(135deg,#1a1a1a,#333)">B</div>
+      <div class="card-info">
+        <h3>Block (Square)</h3>
+        <div class="card-tagline">Payments ecosystem: POS, Cash App, Afterpay</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="meta-tag">Payments</span>
+      <span class="meta-tag public">Public &middot; NYSE: XYZ</span>
+      <span class="meta-tag">Founded 2009</span>
+    </div>
+    <div class="card-expand-hint">Click to expand full profile &rarr;</div>
+    <div class="card-summary">
+      <p>Block, Inc. (formerly Square) is a financial technology ecosystem spanning small business payments, consumer finance, and Bitcoin services. Founded by Jack Dorsey and Jim McKelvey, Square began as a mobile card reader for small businesses. It has since expanded into a multi-product platform: Square (merchant POS and business tools), Cash App (consumer P2P payments, banking, investing, and Bitcoin), Afterpay (buy-now-pay-later, acquired 2022), and Spiral (Bitcoin development).</p>
+
+      <h4>Business Overview</h4>
+      <p>Block reported $21.9 billion in net revenue for fiscal year 2023, with $5.6 billion in gross profit. The Square ecosystem serves millions of merchants with POS hardware, software, payroll, loans, and banking. Cash App has over 55 million monthly active users and generates revenue from interchange, instant deposit fees, Bitcoin transactions, and Cash App Borrow (small loans). Afterpay adds a BNPL channel integrated into both Square merchants and Cash App consumers.</p>
+
+      <h4>Key Metrics</h4>
+      <div class="key-metrics">
+        <div class="metric-box"><div class="metric-label">Revenue (FY2023)</div><div class="metric-value">$21.9B</div></div>
+        <div class="metric-box"><div class="metric-label">Gross Profit</div><div class="metric-value">$5.6B</div></div>
+        <div class="metric-box"><div class="metric-label">Cash App MAUs</div><div class="metric-value">55M+</div></div>
+        <div class="metric-box"><div class="metric-label">Ticker</div><div class="metric-value">NYSE: XYZ</div></div>
+      </div>
+
+      <h4>Competitive Position</h4>
+      <p>Block's unique position is the two-sided ecosystem: Square serves the merchant side, Cash App serves the consumer side, and Afterpay connects them. The closest traditional analogs are Fiserv (merchant acquiring) and traditional banks (consumer banking), but no single incumbent spans both sides. Block's key risk is that Cash App competes against both banks and fintech (Venmo, Chime, Apple Pay) simultaneously, and its Bitcoin exposure adds volatility to revenue.</p>
+
+      <h4>Regulatory Landscape</h4>
+      <p>Block holds state money transmitter licenses, a BitLicense in New York (for Bitcoin services), and industrial loan company banking licenses through Square Financial Services. The CFPB has examined BNPL products industry-wide, and Afterpay faces potential regulation as a credit product. Block's lending operations (Square Loans, Cash App Borrow) are subject to consumer lending regulation.</p>
+
+      <h4>Why This Company Is Interesting for Your Brief</h4>
+      <p>Block is a strong choice if you want to analyze ecosystem strategy: how a company builds a two-sided network that links merchants and consumers. The Afterpay acquisition, Bitcoin strategy, and Cash App's growth all raise interesting questions about focus versus diversification. As a public company, Block has detailed 10-K filings with segment breakdowns.</p>
+
+      <h4>Primary Documentation</h4>
+      <div class="doc-links">
+        <a href="https://investors.block.xyz/financial-information/sec-filings" target="_blank">SEC Filings (10-K)</a>
+        <a href="https://investors.block.xyz/" target="_blank">Investor Relations</a>
+        <a href="https://squareup.com/us/en/about" target="_blank">Square Overview</a>
+      </div>
+    </div>
+    <button class="collapse-btn" onclick="event.stopPropagation();this.closest('.company-card').classList.remove('expanded')">Collapse</button>
+  </div>
+
+  <!-- 3. SOFI -->
+  <div class="company-card" data-category="lending" id="sofi">
+    <div class="card-header">
+      <div class="card-icon" style="background:linear-gradient(135deg,#00b4d8,#0096c7)">S</div>
+      <div class="card-info">
+        <h3>SoFi Technologies</h3>
+        <div class="card-tagline">Digital lending, banking, and investing platform</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="meta-tag">Lending</span>
+      <span class="meta-tag public">Public &middot; NASDAQ: SOFI</span>
+      <span class="meta-tag">Founded 2011</span>
+    </div>
+    <div class="card-expand-hint">Click to expand full profile &rarr;</div>
+    <div class="card-summary">
+      <p>SoFi Technologies is a digital financial services company that began as a student loan refinancing platform and has expanded into a comprehensive financial ecosystem: personal loans, home loans, investing (brokerage and robo-advisory), banking (checking and savings through SoFi Bank), and credit cards. In January 2022, SoFi received a national bank charter through its acquisition of Golden Pacific Bancorp, becoming one of the first major fintechs to operate as a full bank.</p>
+
+      <h4>Business Overview</h4>
+      <p>SoFi's revenue comes from three segments: Lending (personal, student, home loans, generating interest income and loan origination fees), Technology Platform (Galileo for card issuing and Technisys for core banking, both acquired), and Financial Services (SoFi Invest, SoFi Money, SoFi Credit Card). The bank charter allows SoFi to fund loans with deposits rather than more expensive warehouse lines, significantly improving lending margins.</p>
+
+      <h4>Key Metrics</h4>
+      <div class="key-metrics">
+        <div class="metric-box"><div class="metric-label">Revenue (FY2023)</div><div class="metric-value">$2.1B</div></div>
+        <div class="metric-box"><div class="metric-label">Members</div><div class="metric-value">7.5M+</div></div>
+        <div class="metric-box"><div class="metric-label">Products Used</div><div class="metric-value">11M+</div></div>
+        <div class="metric-box"><div class="metric-label">Bank Charter</div><div class="metric-value">Jan 2022</div></div>
+      </div>
+
+      <h4>Competitive Position</h4>
+      <p>SoFi's strategy is to become a one-stop financial platform, cross-selling products to members who initially arrive for one service (often student loan refinancing). The bank charter is a structural advantage: it lowers SoFi's cost of capital for lending and provides a regulatory moat that other fintechs (without charters) cannot match. The closest traditional competitor is a regional bank or credit union offering personal loans, but SoFi's digital-only model and member acquisition strategy differ fundamentally. SoFi also competes with Robinhood (investing), Marcus by Goldman Sachs (savings/loans), and Chime (banking).</p>
+
+      <h4>Regulatory Landscape</h4>
+      <p>With a national bank charter, SoFi is regulated by the OCC and FDIC, subject to bank capital requirements, and must comply with the Community Reinvestment Act. This is both an advantage (access to deposits, preemption of state lending laws) and a constraint (higher compliance costs, examination cycles, capital adequacy requirements). The CFPB also has supervisory authority over SoFi's lending and banking operations.</p>
+
+      <h4>Why This Company Is Interesting for Your Brief</h4>
+      <p>SoFi is an excellent choice for analyzing the fintech-to-bank transition. The bank charter fundamentally changed its economics and competitive position. As a public company, SoFi provides detailed 10-K filings with segment-level financial data and clear articulation of its "Financial Services Productivity Loop" strategy.</p>
+
+      <h4>Primary Documentation</h4>
+      <div class="doc-links">
+        <a href="https://investors.sofi.com/financial-information/sec-filings" target="_blank">SEC Filings (10-K)</a>
+        <a href="https://investors.sofi.com/" target="_blank">Investor Relations</a>
+        <a href="https://www.sofi.com/our-story/" target="_blank">Company Overview</a>
+      </div>
+    </div>
+    <button class="collapse-btn" onclick="event.stopPropagation();this.closest('.company-card').classList.remove('expanded')">Collapse</button>
+  </div>
+
+  <!-- 4. LENDINGCLUB -->
+  <div class="company-card" data-category="lending" id="lendingclub">
+    <div class="card-header">
+      <div class="card-icon" style="background:linear-gradient(135deg,#1a5276,#2471a3)">L</div>
+      <div class="card-info">
+        <h3>LendingClub</h3>
+        <div class="card-tagline">Marketplace lending turned digital bank</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="meta-tag">Lending</span>
+      <span class="meta-tag public">Public &middot; NYSE: LC</span>
+      <span class="meta-tag">Founded 2006</span>
+    </div>
+    <div class="card-expand-hint">Click to expand full profile &rarr;</div>
+    <div class="card-summary">
+      <p>LendingClub is America's first peer-to-peer lending platform, now operating as a full-service digital bank. Founded by Renaud Laplanche, LendingClub originally connected borrowers directly with investors who funded personal loans through the platform. After regulatory challenges and a CEO scandal in 2016, the company pivoted from pure marketplace lending to a bank model, acquiring Radius Bank in February 2021 to become the first US fintech lending platform to obtain a bank charter.</p>
+
+      <h4>Business Overview</h4>
+      <p>LendingClub now operates as a digital marketplace bank. It originates personal loans ($2,000-$40,000) and uses its bank charter to hold some loans on its balance sheet (funded by deposits) while selling others to institutional investors. Revenue comes from origination fees, net interest income on held loans, and servicing fees. The hybrid model (originate, hold some, sell some) gives LendingClub more flexibility than a pure marketplace or a pure balance sheet lender.</p>
+
+      <h4>Key Metrics</h4>
+      <div class="key-metrics">
+        <div class="metric-box"><div class="metric-label">Revenue (FY2023)</div><div class="metric-value">~$880M</div></div>
+        <div class="metric-box"><div class="metric-label">Loan Originations</div><div class="metric-value">$5.8B</div></div>
+        <div class="metric-box"><div class="metric-label">Total Deposits</div><div class="metric-value">~$7B</div></div>
+        <div class="metric-box"><div class="metric-label">Bank Charter</div><div class="metric-value">Feb 2021</div></div>
+      </div>
+
+      <h4>Competitive Position</h4>
+      <p>LendingClub's core advantage is its proprietary credit model, built on 18+ years of loan performance data. This data moat informs underwriting decisions that traditional banks cannot easily replicate (since they lack the volume of unsecured personal loan data). The bank charter lowered LendingClub's funding costs significantly. Competition comes from SoFi, Prosper, Upstart (AI-driven underwriting), and traditional bank personal loan offerings (Wells Fargo, Discover).</p>
+
+      <h4>Regulatory Landscape</h4>
+      <p>LendingClub is regulated by the OCC and FDIC as a national bank. The 2016 CEO departure (related to improper loan sales) resulted in SEC and DOJ investigations that were resolved with settlements. This history makes regulatory scrutiny a persistent theme. The company has invested heavily in compliance infrastructure post-charter, but the legacy reputational risk remains relevant for analysis.</p>
+
+      <h4>Why This Company Is Interesting for Your Brief</h4>
+      <p>LendingClub offers a compelling arc: from fintech disruptor (P2P lending) to regulatory crisis (2016) to reinvention as a digital bank. It raises important questions about whether fintech companies ultimately need to become banks to survive. The 2016 scandal and its aftermath provide rich material for the regulatory dimension.</p>
+
+      <h4>Primary Documentation</h4>
+      <div class="doc-links">
+        <a href="https://ir.lendingclub.com/financials/sec-filings" target="_blank">SEC Filings (10-K)</a>
+        <a href="https://ir.lendingclub.com/" target="_blank">Investor Relations</a>
+        <a href="https://www.lendingclub.com/company/about-us" target="_blank">Company Overview</a>
+      </div>
+    </div>
+    <button class="collapse-btn" onclick="event.stopPropagation();this.closest('.company-card').classList.remove('expanded')">Collapse</button>
+  </div>
+
+  <!-- 5. AFFIRM -->
+  <div class="company-card" data-category="lending" id="affirm">
+    <div class="card-header">
+      <div class="card-icon" style="background:linear-gradient(135deg,#4a00e0,#7c3aed)">A</div>
+      <div class="card-info">
+        <h3>Affirm</h3>
+        <div class="card-tagline">Buy-now-pay-later and point-of-sale lending</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="meta-tag">BNPL</span>
+      <span class="meta-tag public">Public &middot; NASDAQ: AFRM</span>
+      <span class="meta-tag">Founded 2012</span>
+    </div>
+    <div class="card-expand-hint">Click to expand full profile &rarr;</div>
+    <div class="card-summary">
+      <p>Affirm is a buy-now-pay-later (BNPL) company founded by Max Levchin (PayPal co-founder). Affirm provides installment loans at the point of sale, allowing consumers to split purchases into fixed payments over time. Unlike credit cards, Affirm shows the total cost upfront with no hidden fees, late fees, or compounding interest. The company has integrated with major merchants including Amazon, Shopify, Walmart, and Target.</p>
+
+      <h4>Business Overview</h4>
+      <p>Affirm's revenue comes from two primary sources: merchant fees (merchants pay Affirm 2-8% of the transaction for offering installment options, because BNPL increases conversion rates and average order values) and interest income on longer-term loans (Affirm charges 0-36% APR depending on creditworthiness and loan term). Affirm originates loans through its own subsidiary (Affirm, Inc.) and partner banks (Cross River Bank), then holds some on balance sheet and securitizes others.</p>
+
+      <h4>Key Metrics</h4>
+      <div class="key-metrics">
+        <div class="metric-box"><div class="metric-label">Revenue (FY2024)</div><div class="metric-value">$2.3B</div></div>
+        <div class="metric-box"><div class="metric-label">GMV</div><div class="metric-value">$26.6B</div></div>
+        <div class="metric-box"><div class="metric-label">Active Consumers</div><div class="metric-value">18.6M</div></div>
+        <div class="metric-box"><div class="metric-label">Active Merchants</div><div class="metric-value">303K</div></div>
+      </div>
+
+      <h4>Competitive Position</h4>
+      <p>Affirm competes against other BNPL providers (Klarna, Afterpay/Block, PayPal Pay Later) and traditional credit cards. Its advantage is the merchant integration and underwriting model: Affirm underwrites each transaction individually using proprietary ML models, rather than assigning a blanket credit limit. This reduces default risk and allows Affirm to approve consumers that credit cards might decline. The disadvantage is that BNPL margins are compressed by competition, and the entire category faces regulatory uncertainty about whether BNPL should be regulated as credit (triggering Truth in Lending Act compliance).</p>
+
+      <h4>Regulatory Landscape</h4>
+      <p>The CFPB has formally examined the BNPL industry and issued a 2022 report treating BNPL as a credit product subject to consumer protection regulation. If BNPL is regulated like credit cards (Regulation Z, TILA disclosures, dispute resolution rights), compliance costs would rise significantly. Affirm has preemptively adopted more disclosure than competitors, positioning itself as the "transparent" BNPL provider, but the regulatory outcome affects the entire business model.</p>
+
+      <h4>Why This Company Is Interesting for Your Brief</h4>
+      <p>Affirm is a strong choice if you want to analyze how a company disrupts an entrenched financial product (credit cards) by redesigning the consumer experience and business model. The regulatory uncertainty around BNPL classification provides rich material for Dimension 3. As a public company, Affirm has detailed 10-K filings.</p>
+
+      <h4>Primary Documentation</h4>
+      <div class="doc-links">
+        <a href="https://investors.affirm.com/sec-filings" target="_blank">SEC Filings (10-K)</a>
+        <a href="https://investors.affirm.com/" target="_blank">Investor Relations</a>
+        <a href="https://www.affirm.com/business" target="_blank">Affirm for Business</a>
+      </div>
+    </div>
+    <button class="collapse-btn" onclick="event.stopPropagation();this.closest('.company-card').classList.remove('expanded')">Collapse</button>
+  </div>
+
+  <!-- 6. CHIME -->
+  <div class="company-card" data-category="neobanking" id="chime">
+    <div class="card-header">
+      <div class="card-icon" style="background:linear-gradient(135deg,#00c853,#00a845)">C</div>
+      <div class="card-info">
+        <h3>Chime</h3>
+        <div class="card-tagline">Fee-free neobank for everyday Americans</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="meta-tag">Neobanking</span>
+      <span class="meta-tag private">Private</span>
+      <span class="meta-tag">Founded 2012</span>
+    </div>
+    <div class="card-expand-hint">Click to expand full profile &rarr;</div>
+    <div class="card-summary">
+      <p>Chime is a neobank that provides fee-free checking accounts, savings accounts, and a secured credit-building credit card. Unlike traditional banks that profit from overdraft fees, maintenance fees, and minimum balance penalties, Chime charges none of these. Its accounts are held at partner banks (Bancorp Bank and Stride Bank, both FDIC-insured) while Chime operates as the technology and customer-facing layer. Chime specifically targets Americans who are underserved by traditional banking: those who live paycheck to paycheck, have thin credit files, or have been charged excessive fees.</p>
+
+      <h4>Business Overview</h4>
+      <p>Chime's revenue comes almost entirely from interchange fees: every time a Chime debit card is swiped, Visa pays Chime a percentage of the transaction (typically 1-1.5% through the Visa network). The company has no branch network, no loan portfolio, and no interest income from lending. This makes Chime's model radically simple but also dependent on a single revenue stream. Features like SpotMe (fee-free overdraft up to $200) and early direct deposit (receiving paychecks up to two days early) drive user engagement and transaction volume.</p>
+
+      <h4>Key Metrics</h4>
+      <div class="key-metrics">
+        <div class="metric-box"><div class="metric-label">Valuation (2021)</div><div class="metric-value">~$25B</div></div>
+        <div class="metric-box"><div class="metric-label">Account Holders</div><div class="metric-value">15M+</div></div>
+        <div class="metric-box"><div class="metric-label">Revenue Model</div><div class="metric-value">Interchange</div></div>
+        <div class="metric-box"><div class="metric-label">IPO Status</div><div class="metric-value">Filed 2024</div></div>
+      </div>
+
+      <h4>Competitive Position</h4>
+      <p>Chime competes against traditional banks (which rely on fee income Chime eliminates), other neobanks (Varo, Current, Dave), and Cash App's banking features. Its advantage is brand loyalty among its target demographic and a cost structure with no physical branches. Its disadvantage is the single-revenue-stream risk: if interchange rates are regulated downward (as they have been in the EU under PSD2 interchange caps), Chime's entire model is threatened. Chime also does not offer lending, investing, or business accounts, limiting cross-sell opportunities compared to SoFi or Block.</p>
+
+      <h4>Regulatory Landscape</h4>
+      <p>Chime is not a bank. It operates through partner banks (Bancorp, Stride) that hold the banking licenses and FDIC insurance. This means Chime avoids direct banking regulation but is dependent on partner bank relationships. The FDIC has previously warned non-bank fintechs against implying they are FDIC-insured, and Chime received a cease-and-desist from California's DFPI in 2021 for using the word "bank" in marketing. If Chime's partner banks face regulatory pressure, Chime's operations could be disrupted.</p>
+
+      <h4>Why This Company Is Interesting for Your Brief</h4>
+      <p>Chime is an excellent choice for analyzing the neobank model: no bank charter, no lending, revenue from interchange only. It raises important questions about whether this model is sustainable long-term and how regulatory classification of non-bank fintechs will evolve. Chime's IPO filing (S-1) may be available and would provide detailed financial data.</p>
+
+      <h4>Primary Documentation</h4>
+      <div class="doc-links">
+        <a href="https://www.chime.com/about-us/" target="_blank">About Chime</a>
+        <a href="https://www.chime.com/blog/" target="_blank">Chime Blog</a>
+        <a href="https://www.sec.gov/cgi-bin/browse-edgar?company=chime&CIK=&type=S-1&dateb=&owner=include&count=40&search_text=&action=getcompany" target="_blank">SEC EDGAR (S-1 search)</a>
+      </div>
+    </div>
+    <button class="collapse-btn" onclick="event.stopPropagation();this.closest('.company-card').classList.remove('expanded')">Collapse</button>
+  </div>
+
+  <!-- 7. REVOLUT -->
+  <div class="company-card" data-category="neobanking" id="revolut">
+    <div class="card-header">
+      <div class="card-icon" style="background:linear-gradient(135deg,#0075eb,#0050a0)">R</div>
+      <div class="card-info">
+        <h3>Revolut</h3>
+        <div class="card-tagline">Global neobank: multi-currency, crypto, trading</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="meta-tag">Neobanking</span>
+      <span class="meta-tag private">Private</span>
+      <span class="meta-tag">Founded 2015</span>
+    </div>
+    <div class="card-expand-hint">Click to expand full profile &rarr;</div>
+    <div class="card-summary">
+      <p>Revolut is a UK-based global neobank founded by Nikolay Storonsky and Vlad Yatsenko. It began as a multi-currency travel card offering interbank exchange rates and has expanded into a "financial super-app": banking, crypto trading, stock trading, insurance, international transfers, business accounts, and more. Revolut holds a UK banking license (granted 2024), an EU banking license through Lithuania, and operates in 35+ countries.</p>
+
+      <h4>Business Overview</h4>
+      <p>Revolut reported revenue of $2.2 billion for fiscal year 2023 with its first full year of profitability ($545 million pre-tax profit). Revenue comes from multiple streams: interchange fees, subscription plans (Standard/Plus/Premium/Metal/Ultra tiers from free to $45/month), foreign exchange fees on amounts exceeding free tiers, crypto trading commissions, wealth management, and business account fees. The subscription model is a key differentiator: Revolut converts free users into paying subscribers through premium features.</p>
+
+      <h4>Key Metrics</h4>
+      <div class="key-metrics">
+        <div class="metric-box"><div class="metric-label">Revenue (FY2023)</div><div class="metric-value">$2.2B</div></div>
+        <div class="metric-box"><div class="metric-label">Customers</div><div class="metric-value">40M+</div></div>
+        <div class="metric-box"><div class="metric-label">Valuation (2024)</div><div class="metric-value">~$45B</div></div>
+        <div class="metric-box"><div class="metric-label">Countries</div><div class="metric-value">35+</div></div>
+      </div>
+
+      <h4>Competitive Position</h4>
+      <p>Revolut's advantage is breadth: no other neobank offers multi-currency accounts, crypto, stock trading, insurance, and international transfers in a single app across 35+ countries. This "super-app" strategy mirrors WeChat Pay and Alipay in Asia. The disadvantage is focus: Revolut competes in every product category simultaneously against specialists (Wise in transfers, Robinhood in trading, Coinbase in crypto, traditional banks in lending). The UK banking license is a significant milestone that enables deposit-funded lending.</p>
+
+      <h4>Regulatory Landscape</h4>
+      <p>Revolut's regulatory journey has been complex. It spent years seeking a UK banking license, finally receiving authorization from the PRA in 2024 after delays related to the FCA's concerns about its compliance infrastructure. In the EU, it operates under a Lithuanian banking license. In the US, it does not have a bank charter and operates through partner banks. The crypto trading features face varying regulation by jurisdiction (FCA registration in UK, state-by-state money transmitter licenses in US). The multi-jurisdictional regulatory patchwork is itself a significant risk and cost factor.</p>
+
+      <h4>Why This Company Is Interesting for Your Brief</h4>
+      <p>Revolut is a strong choice for analyzing the "super-app" neobank strategy and the challenges of global fintech regulation. The contrast between its UK banking license journey, EU operations, and US regulatory limitations provides excellent material for Dimension 3. As a private company, primary data comes from its published annual reports rather than SEC filings.</p>
+
+      <h4>Primary Documentation</h4>
+      <div class="doc-links">
+        <a href="https://www.revolut.com/en-US/news/" target="_blank">Revolut News</a>
+        <a href="https://www.revolut.com/about-revolut/" target="_blank">About Revolut</a>
+        <a href="https://www.revolut.com/blog/" target="_blank">Revolut Blog</a>
+      </div>
+    </div>
+    <button class="collapse-btn" onclick="event.stopPropagation();this.closest('.company-card').classList.remove('expanded')">Collapse</button>
+  </div>
+
+  <!-- 8. PLAID -->
+  <div class="company-card" data-category="infrastructure" id="plaid">
+    <div class="card-header">
+      <div class="card-icon" style="background:linear-gradient(135deg,#111,#333)">P</div>
+      <div class="card-info">
+        <h3>Plaid</h3>
+        <div class="card-tagline">Financial data connectivity infrastructure</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="meta-tag">Infrastructure</span>
+      <span class="meta-tag private">Private</span>
+      <span class="meta-tag">Founded 2013</span>
+    </div>
+    <div class="card-expand-hint">Click to expand full profile &rarr;</div>
+    <div class="card-summary">
+      <p>Plaid builds the "plumbing" that connects consumer bank accounts to fintech applications. When you link your bank account to Venmo, Robinhood, or Coinbase, Plaid is almost certainly the technology enabling that connection. The company provides APIs that let applications verify bank accounts, authenticate users, check balances, pull transaction histories, and initiate payments. Plaid connects to over 12,000 financial institutions in the US, Canada, UK, and EU.</p>
+
+      <h4>Business Overview</h4>
+      <p>Plaid's revenue model is API-call-based: fintech companies pay per connection, per verification, or per data pull. The company also offers higher-value products: Plaid Transfer (money movement), Plaid Identity Verification (KYC), Plaid Signal (fraud risk scoring), and Plaid Income (income verification for lending). Over 8,000 apps use Plaid. In January 2020, Visa attempted to acquire Plaid for $5.3 billion; the DOJ sued to block the deal, and it was abandoned in January 2021. Plaid subsequently raised funding at a $13.4 billion valuation in 2022.</p>
+
+      <h4>Key Metrics</h4>
+      <div class="key-metrics">
+        <div class="metric-box"><div class="metric-label">Valuation (2022)</div><div class="metric-value">$13.4B</div></div>
+        <div class="metric-box"><div class="metric-label">Connected Apps</div><div class="metric-value">8,000+</div></div>
+        <div class="metric-box"><div class="metric-label">FI Connections</div><div class="metric-value">12,000+</div></div>
+        <div class="metric-box"><div class="metric-label">Visa Deal (blocked)</div><div class="metric-value">$5.3B</div></div>
+      </div>
+
+      <h4>Competitive Position</h4>
+      <p>Plaid's advantage is its network: the more banks it connects to, the more apps use it; the more apps use it, the more banks prioritize integration. This two-sided network effect creates strong switching costs. Competitors include MX (financial data aggregation), Yodlee/Envestnet, and Finicity (acquired by Mastercard). Plaid's disadvantage is that its data-scraping methods have faced legal challenges from banks (a class-action settlement in 2022 over screen-scraping consumer credentials), and the regulatory push toward open banking APIs (like the CFPB's Section 1033 rulemaking) could either strengthen Plaid (standardized access) or weaken it (if banks provide direct APIs, eliminating the need for a middleman).</p>
+
+      <h4>Regulatory Landscape</h4>
+      <p>Plaid operates in a rapidly evolving regulatory environment. The CFPB's Section 1033 rulemaking (proposed October 2023) would require banks to share consumer financial data with authorized third parties through standardized APIs. This could benefit Plaid by legitimizing data access and mandating bank cooperation, or threaten Plaid by enabling direct bank-to-app connections that bypass aggregators. The DOJ's antitrust action against the Visa acquisition also signals regulatory attention to financial data infrastructure as a competitive bottleneck.</p>
+
+      <h4>Why This Company Is Interesting for Your Brief</h4>
+      <p>Plaid is an excellent choice for analyzing infrastructure-layer fintech: a company that doesn't serve end consumers but powers the applications that do. The Visa acquisition attempt, DOJ antitrust suit, and CFPB open banking rulemaking provide unusually rich regulatory material. As a private company, data comes from press coverage and Plaid's own publications rather than SEC filings.</p>
+
+      <h4>Primary Documentation</h4>
+      <div class="doc-links">
+        <a href="https://plaid.com/company/" target="_blank">About Plaid</a>
+        <a href="https://plaid.com/documents/" target="_blank">Plaid Resources</a>
+        <a href="https://plaid.com/docs/" target="_blank">Plaid API Docs</a>
+        <a href="https://www.justice.gov/opa/pr/visa-and-plaid-abandon-merger-after-antitrust-division-s-suit-block" target="_blank">DOJ Press Release</a>
+      </div>
+    </div>
+    <button class="collapse-btn" onclick="event.stopPropagation();this.closest('.company-card').classList.remove('expanded')">Collapse</button>
+  </div>
+
+  <!-- 9. MARQETA -->
+  <div class="company-card" data-category="infrastructure" id="marqeta">
+    <div class="card-header">
+      <div class="card-icon" style="background:linear-gradient(135deg,#e65100,#ff8f00)">M</div>
+      <div class="card-info">
+        <h3>Marqeta</h3>
+        <div class="card-tagline">Modern card issuing and processing platform</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="meta-tag">Infrastructure</span>
+      <span class="meta-tag public">Public &middot; NASDAQ: MQ</span>
+      <span class="meta-tag">Founded 2010</span>
+    </div>
+    <div class="card-expand-hint">Click to expand full profile &rarr;</div>
+    <div class="card-summary">
+      <p>Marqeta is a modern card issuing platform that enables companies to create and manage customized payment cards (physical and virtual) through APIs. When DoorDash pays a Dasher, Affirm issues a virtual card at checkout, or Block issues Cash App debit cards, Marqeta's infrastructure powers those cards. The platform lets companies configure card behavior in real time: spending limits, merchant category restrictions, dynamic funding, and just-in-time (JIT) funding where the card is loaded only at the moment of transaction.</p>
+
+      <h4>Business Overview</h4>
+      <p>Marqeta's revenue is primarily volume-based: it earns a small percentage of every transaction processed on cards it has issued (net revenue after paying interchange to the issuing bank). For fiscal year 2023, Marqeta reported net revenue of approximately $580 million. Block (Cash App and Square Card) is Marqeta's largest customer, representing roughly 50% of net revenue, which creates significant customer concentration risk. Other major clients include DoorDash, Affirm, Klarna, and JP Morgan.</p>
+
+      <h4>Key Metrics</h4>
+      <div class="key-metrics">
+        <div class="metric-box"><div class="metric-label">Net Revenue (FY2023)</div><div class="metric-value">~$580M</div></div>
+        <div class="metric-box"><div class="metric-label">TPV</div><div class="metric-value">$166B</div></div>
+        <div class="metric-box"><div class="metric-label">Top Customer</div><div class="metric-value">Block (~50%)</div></div>
+        <div class="metric-box"><div class="metric-label">Ticker</div><div class="metric-value">NASDAQ: MQ</div></div>
+      </div>
+
+      <h4>Competitive Position</h4>
+      <p>Marqeta's advantage is its modern, API-first card issuing platform. Legacy card processors (Fiserv, FIS, Global Payments) built their systems decades ago for bank-issued credit cards, and retrofitting for real-time, programmable card behavior is difficult. Marqeta's JIT funding capability, which loads a card balance only at the moment of swipe, is particularly valuable for gig economy (DoorDash/Instacart) and BNPL (Affirm/Klarna) use cases where the funding source is determined per transaction. The key risk is customer concentration: losing Block would cut revenue roughly in half.</p>
+
+      <h4>Regulatory Landscape</h4>
+      <p>Marqeta is a card program manager, not a bank. It works with issuing banks (Sutton Bank, others) that hold the banking licenses. This means Marqeta itself is not directly subject to bank regulation, but its operations depend on partner bank compliance. If regulators tighten requirements for bank-fintech partnerships (as the OCC and FDIC have increasingly signaled), Marqeta's operating model could face constraints. The Durbin Amendment's interchange fee caps on large banks also affect the interchange economics that flow through Marqeta's business.</p>
+
+      <h4>Why This Company Is Interesting for Your Brief</h4>
+      <p>Marqeta is an excellent choice for analyzing infrastructure-layer fintech and the "picks and shovels" strategy: Marqeta profits regardless of which fintech wins the consumer, as long as they issue cards through its platform. The customer concentration risk and the dependency on partner banks create interesting analytical tensions. Detailed 10-K filings are available.</p>
+
+      <h4>Primary Documentation</h4>
+      <div class="doc-links">
+        <a href="https://investors.marqeta.com/financial-information/sec-filings" target="_blank">SEC Filings (10-K)</a>
+        <a href="https://investors.marqeta.com/" target="_blank">Investor Relations</a>
+        <a href="https://www.marqeta.com/platform" target="_blank">Platform Overview</a>
+      </div>
+    </div>
+    <button class="collapse-btn" onclick="event.stopPropagation();this.closest('.company-card').classList.remove('expanded')">Collapse</button>
+  </div>
+
+  <!-- 10. TOAST -->
+  <div class="company-card" data-category="infrastructure" id="toast">
+    <div class="card-header">
+      <div class="card-icon" style="background:linear-gradient(135deg,#f4511e,#ff7043)">T</div>
+      <div class="card-info">
+        <h3>Toast</h3>
+        <div class="card-tagline">Restaurant-specific fintech: POS, payments, lending</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="meta-tag">Infrastructure</span>
+      <span class="meta-tag public">Public &middot; NYSE: TOST</span>
+      <span class="meta-tag">Founded 2011</span>
+    </div>
+    <div class="card-expand-hint">Click to expand full profile &rarr;</div>
+    <div class="card-summary">
+      <p>Toast is a vertical fintech company that provides an integrated technology platform exclusively for restaurants. Its system combines point-of-sale hardware and software, digital ordering, delivery management, payroll, team management, marketing, and financial services (Toast Capital for lending). Unlike horizontal payment processors that serve all merchants, Toast builds every feature specifically for the restaurant industry's workflows, margins, and regulatory requirements (tip handling, food safety, kitchen display systems).</p>
+
+      <h4>Business Overview</h4>
+      <p>Toast reported revenue of $3.9 billion for fiscal year 2023 across three segments: Financial Technology Solutions (payment processing, Toast Capital lending; the majority of revenue), Subscription Services (SaaS fees for the software platform), and Hardware and Professional Services (POS terminals, onboarding). Revenue is weighted toward payments processing, with SaaS subscriptions growing as the higher-margin complement. Toast's go-to-market strategy targets the massive, fragmented US restaurant market (over 860,000 restaurants).</p>
+
+      <h4>Key Metrics</h4>
+      <div class="key-metrics">
+        <div class="metric-box"><div class="metric-label">Revenue (FY2023)</div><div class="metric-value">$3.9B</div></div>
+        <div class="metric-box"><div class="metric-label">Restaurant Locations</div><div class="metric-value">106K+</div></div>
+        <div class="metric-box"><div class="metric-label">GPV</div><div class="metric-value">$126B</div></div>
+        <div class="metric-box"><div class="metric-label">Ticker</div><div class="metric-value">NYSE: TOST</div></div>
+      </div>
+
+      <h4>Competitive Position</h4>
+      <p>Toast competes against horizontal POS providers (Square, Clover/Fiserv) and legacy restaurant POS systems (Aloha/NCR, Micros/Oracle). Its advantage is vertical specialization: every feature is designed for restaurant workflows, which means faster onboarding, better operational fit, and stickier customer relationships. The disadvantage is market concentration: Toast's entire business depends on the US restaurant industry, which has thin margins and is sensitive to economic downturns. Square offers comparable POS features for a broader range of businesses.</p>
+
+      <h4>Regulatory Landscape</h4>
+      <p>Toast's primary regulatory exposure comes through its lending product (Toast Capital, which provides working capital advances to restaurants) and payment processing. Toast Capital operates similarly to merchant cash advances, which face less regulation than traditional loans but are under increasing CFPB scrutiny. Additionally, restaurant-specific regulations around tip pooling, tip credit calculations, and minimum wage interact with Toast's payroll product. Data privacy requirements (state-level and PCI-DSS for payment card data) add compliance costs.</p>
+
+      <h4>Why This Company Is Interesting for Your Brief</h4>
+      <p>Toast is an excellent choice for analyzing the vertical fintech strategy: owning an entire industry's technology stack rather than competing horizontally. It raises questions about whether vertical specialization is a sustainable competitive advantage or a ceiling on growth. Detailed 10-K filings are available with segment breakdowns.</p>
+
+      <h4>Primary Documentation</h4>
+      <div class="doc-links">
+        <a href="https://investors.toasttab.com/financial-information/sec-filings" target="_blank">SEC Filings (10-K)</a>
+        <a href="https://investors.toasttab.com/" target="_blank">Investor Relations</a>
+        <a href="https://pos.toasttab.com/about" target="_blank">About Toast</a>
+      </div>
+    </div>
+    <button class="collapse-btn" onclick="event.stopPropagation();this.closest('.company-card').classList.remove('expanded')">Collapse</button>
+  </div>
+
+</div><!-- /card-grid -->
+
+<div class="callout info" style="max-width:720px;margin:2rem auto">
+  <strong>A Note on Data Currency</strong>
+  The metrics in these profiles reflect the most recent publicly available data as of early 2026. For public companies, always check the most recent 10-K or 10-Q filing on SEC EDGAR for current figures. For private companies, note that valuations and metrics may be outdated. Part of your analysis is identifying and using the most current data available.
+</div>
+
+</div><!-- /container -->
+
+<script>
+// Card expand/collapse
+document.querySelectorAll('.company-card').forEach(card => {
+  card.addEventListener('click', function(e) {
+    if (e.target.closest('.collapse-btn') || e.target.closest('.doc-links')) return;
+    if (this.classList.contains('expanded')) return;
+    // Collapse all others
+    document.querySelectorAll('.company-card.expanded').forEach(c => c.classList.remove('expanded'));
+    this.classList.add('expanded');
+    this.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+});
+
+// Category filters
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const filter = this.dataset.filter;
+    document.querySelectorAll('.company-card').forEach(card => {
+      card.classList.remove('expanded');
+      if (filter === 'all' || card.dataset.category === filter) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  });
+});
+</script>
+
+</body>
+</html>
